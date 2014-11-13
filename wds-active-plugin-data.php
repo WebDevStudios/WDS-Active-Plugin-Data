@@ -10,7 +10,13 @@ License: GPLv2
 Text Domain: wds-apd
 */
 
-if ( !class_exists( 'WDS_Active_Plugin_Data' ) ) {
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+
+if ( ! class_exists( 'WDS_Active_Plugin_Data' ) ) {
 	class WDS_Active_Plugin_Data {
 
 		/**
@@ -54,7 +60,7 @@ if ( !class_exists( 'WDS_Active_Plugin_Data' ) ) {
 		public function get_available_plugins() {
 			$plugins = get_plugins();
 
-			if ( !empty ( $plugins ) ) {
+			if ( ! empty ( $plugins ) ) {
 				foreach ( $plugins as $plugin_file => $plugin_data ) {
 					$this->available_plugins[ $plugin_data['Name'] ] = $plugin_file;
 				}
