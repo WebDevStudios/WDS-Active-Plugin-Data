@@ -124,7 +124,7 @@ if ( ! class_exists( 'WDS_Active_Plugin_Data' ) ) {
 		 * @since 1.0.0
 		 */
 		public function get_advanced_list() { ?>
-			<div id="advanced" class="display-none">
+			<div id="wds-advanced" class="wds-display-none">
 				<h2><?php _e( 'Advanced', 'wds-apd' ); ?></h2>
 				<table class="wds-form-table">
 					<tr>
