@@ -209,10 +209,19 @@ if ( ! class_exists( 'WDS_Active_Plugin_Data' ) ) {
 			?>
 			<script>
 				(function($) {
-					$('.advanced,.simple').on( 'click', function(e){
+					$('.wds-advanced,.wds-simple,.wds-sites-list').on( 'click', function(e){
 						e.preventDefault();
-						$('#advanced').toggleClass('display-none');
-						$('#simple').toggleClass('display-none');
+						var links = ['wds-advanced','wds-simple','wds-sites-list'];
+						var $show = $(this).attr('class');
+						var $display = $('#'+$show);
+
+						$(links).each(function(i,att){
+							if ( att == $show && $display.hasClass('wds-display-none') ) {
+								$display.removeClass('wds-display-none');
+							} else {
+								$('#'+att).addClass('wds-display-none');
+							}
+						});
 					});
 				})(jQuery);
 			</script>
