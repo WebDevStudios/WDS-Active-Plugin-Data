@@ -235,22 +235,13 @@ if ( ! class_exists( 'WDS_Active_Plugin_Data' ) ) {
 		 */
 		public function styles() { ?>
 			<style>
-			.display-none {
-				display: none;
-			}
-			.wds-form-table {
-				width: 100%;
-			}
-			.wds-form-table th {
-				text-align: left;
-			}
-			.wds-form-table td {
-				width: 33%;
-			}
-			#simple textarea {
-				width: 500px;
-				height: 500px;
-			}
+			.wds-display-none { display: none; }
+			.wds-form-table { width: 100%; }
+			.wds-form-table th { text-align: left; }
+			.wds-form-table td { width: 33%; }
+			#wds-simple textarea { width: 500px; height: 500px; }
+			.wds-green { background-color: #008000; color: #fff; }
+			.wds-red { background-color: red; color: #fff; }
 			</style>
 		<?php
 		}
