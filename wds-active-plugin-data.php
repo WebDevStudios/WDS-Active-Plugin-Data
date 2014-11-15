@@ -195,7 +195,7 @@ if ( ! class_exists( 'WDS_Active_Plugin_Data' ) ) {
 		 * @since 1.0.0
 		 */
 		public function get_toggle_links() { ?>
-			<p><a class="simple" href="#"><?php _e( 'Toggle Simple', 'wds-apd' ); ?></a> | <a class="advanced" href="#"><?php _e( 'Toggle Advanced', 'wds-apd' ); ?></a></p>
+			<p><a class="wds-simple" href="#"><?php _e( 'Toggle Simple', 'wds-apd' ); ?></a> | <a class="wds-advanced" href="#"><?php _e( 'Toggle Advanced', 'wds-apd' ); ?></a> | <a class="wds-sites-list" href="#"><?php _e( 'Toggle Sites List', 'wds-apd' ); ?></a></p>
 
 		<?php
 		}
