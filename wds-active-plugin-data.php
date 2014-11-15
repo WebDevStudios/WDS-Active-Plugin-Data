@@ -90,6 +90,32 @@ if ( ! class_exists( 'WDS_Active_Plugin_Data' ) ) {
 			echo $this->get_simple_list();
 
 			$this->get_advanced_list();
+
+			$this->get_sites_list();
+		}
+
+		/**
+		 * Output our "Simple" list.
+		 *
+		 * @since 1.0.0
+		 */
+		public function get_simple_list() { ?>
+			<div id="wds-simple">
+				<h2><?php _e( 'Simple', 'wds-apd' ); ?></h2>
+				<?php
+				$text = '';
+				foreach( $this->available_plugins as $plugin_name => $plugin_file ) {
+					$text .= $plugin_name . ' ';
+					$text .= ( is_plugin_active( $plugin_file ) ) ? __( '[A]', 'wds-apd' ) : '';
+					$text .= ( is_plugin_active_for_network( $plugin_file ) ) ? __( '[NA]', 'wds-apd' ) : '';
+					$text .= "\n";
+				}
+				?>
+				<textarea onclick="this.focus();this.select()" readonly="readonly"><?php echo trim( $text ); ?></textarea>
+			</div>
+			</div>
+
+			<?php
 		}
 
 		/**
@@ -121,28 +147,46 @@ if ( ! class_exists( 'WDS_Active_Plugin_Data' ) ) {
 		<?php
 		}
 
-		/**
-		 * Output our "Simple" list.
-		 *
-		 * @since 1.0.0
-		 */
-		public function get_simple_list() { ?>
-			<div id="simple">
-				<h2><?php _e( 'Simple', 'wds-apd' ); ?></h2>
-				<?php
-				$text = '';
-				foreach( $this->available_plugins as $plugin_name => $plugin_file ) {
-					$text .= $plugin_name . ' ';
-					$text .= ( is_plugin_active( $plugin_file ) ) ? __( '[A]', 'wds-apd' ) : '';
-					$text .= ( is_plugin_active_for_network( $plugin_file ) ) ? __( '[NA]', 'wds-apd' ) : '';
-					$text .= "\n";
-				}
-				?>
-				<textarea onclick="this.focus();this.select()" readonly="readonly"><?php echo trim( $text ); ?></textarea>
-			</div>
-			</div>
+		public function get_sites_list() {
+			$sites = wp_get_sites(
+				array(
+					'deleted' => false
+				)
+			);
 
-			<?php
+			if ( !empty( $sites ) ) { ?>
+				<div id="wds-sites-list" class="wds-display-none">
+				<h2><?php _e( 'Sites List', 'wds-apd' ); ?></h2>
+				<table>
+					<tr>
+						<td><strong><?php _e( 'Plugin Name / Site ID', 'wds-apd' ); ?></strong></td>
+						<?php
+							foreach( $sites as $site ) {
+								echo '<td>' . $site['blog_id'] . '</td>';
+							}
+						?>
+					</tr>
+
+					<?php
+						foreach( $this->available_plugins as $plugin_name => $plugin_file ) {
+							echo '<tr><td>' . $plugin_name . '</td>';
+
+							foreach( $sites as $site ) {
+								switch_to_blog( $site['blog_id'] );
+
+								echo '<td>';
+								echo ( is_plugin_active( $plugin_file ) ) ? '<span class="dashicons dashicons-yes wds-green"></span>' : '<span class="dashicons dashicons-no-alt wds-red"></span>';
+								echo '</td>';
+
+								restore_current_blog();
+							}
+							echo '</tr>';
+						}
+					?>
+				</table>
+				</div>
+				<?php
+			}
 		}
 
 		/**
