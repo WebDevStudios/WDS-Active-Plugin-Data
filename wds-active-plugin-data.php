@@ -106,7 +106,9 @@ if ( ! class_exists( 'WDS_Active_Plugin_Data' ) ) {
 				$text = '';
 				foreach( $this->available_plugins as $plugin_name => $plugin_file ) {
 					$text .= $plugin_name . ' ';
+					/* translators: [A] is meant to describe "Active" */
 					$text .= ( is_plugin_active( $plugin_file ) ) ? __( '[A]', 'wds-apd' ) : '';
+					/* translators: [NA] is meant to describe "Not Active" */
 					$text .= ( is_plugin_active_for_network( $plugin_file ) ) ? __( '[NA]', 'wds-apd' ) : '';
 					$text .= "\n";
 				}
