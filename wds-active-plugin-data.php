@@ -100,8 +100,8 @@ class WDS_Active_Plugin_Data {
 		foreach ( $sites as $site ) {
 			$blog_id = absint( $site['blog_id'] );
 			$sql = 1 == $blog_id
-				? "SELECT option_value FROM wp_options WHERE option_name = 'active_plugins' LIMIT 1"
-				: "SELECT option_value FROM wp_{$blog_id}_options WHERE option_name = 'active_plugins' LIMIT 1";
+				? "SELECT option_value FROM {$wpdb->prefix}options WHERE option_name = 'active_plugins' LIMIT 1"
+				: "SELECT option_value FROM {$wpdb->prefix}{$blog_id}_options WHERE option_name = 'active_plugins' LIMIT 1";
 			$row = $wpdb->get_row( $sql );
 
 			$this->all_sites_active_plugins[ $blog_id ] = array();
