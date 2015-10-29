@@ -183,7 +183,7 @@ class WDS_Active_Plugin_Data {
 	public function get_advanced_list() { ?>
 		<div id="wds-advanced" class="wds-display-none">
 			<h2><?php _e( 'Advanced', 'wds-apd' ); ?></h2>
-			<table class="wds-form-table">
+			<table class="widefat fixed striped posts">
 				<tr>
 					<th><?php _e( 'Plugin Name', 'wds-apd' ); ?></th>
 					<th><?php _e( 'Active', 'wds-apd' ); ?></th>
