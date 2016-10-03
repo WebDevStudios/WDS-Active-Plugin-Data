@@ -67,7 +67,7 @@ class WDS_Active_Plugin_Data {
 	 */
 	public function get_sites() {
 		if ( empty( $this->sites ) ) {
-			$this->sites = wp_get_sites( array( 'deleted' => false ) );
+			$this->sites = get_sites( array( 'deleted' => false ) );
 		}
 
 		return $this->sites;
@@ -98,7 +98,7 @@ class WDS_Active_Plugin_Data {
 		}
 
 		foreach ( $sites as $site ) {
-			$blog_id = absint( $site['blog_id'] );
+			$blog_id = absint( $site->blog_id );
 			$sql = 1 == $blog_id
 				? "SELECT option_value FROM {$wpdb->prefix}options WHERE option_name = 'active_plugins' LIMIT 1"
 				: "SELECT option_value FROM {$wpdb->prefix}{$blog_id}_options WHERE option_name = 'active_plugins' LIMIT 1";
@@ -219,7 +219,7 @@ class WDS_Active_Plugin_Data {
 				<td><strong><?php _e( 'Plugin Name / Site ID', 'wds-apd' ); ?></strong></td>
 				<?php
 					foreach( $sites as $site ) {
-						echo '<td title="' . esc_attr( $site['domain'] ) . '">' . $site['blog_id'] . '</td>';
+						echo '<td title="' . esc_attr( $site->domain ) . '">' . $site->blog_id . '</td>';
 					}
 				?>
 			</tr>
@@ -232,7 +232,7 @@ class WDS_Active_Plugin_Data {
 					$index = 0;
 					foreach ( $this->get_all_sites_active_plugins() as $site => $plugins ) {
 
-						echo '<td title="' . esc_attr( $sites[ $index ]['domain'] ) . '">';
+						echo '<td title="' . esc_attr( $sites[ $index ]->domain ) . '">';
 						echo in_array( $plugin_file, (array) $plugins ) ? '<span class="dashicons dashicons-yes wds-green"></span>' : '<span class="dashicons dashicons-no-alt wds-red"></span>';
 						echo '</td>';
 
