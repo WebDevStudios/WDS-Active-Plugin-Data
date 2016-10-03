@@ -162,7 +162,7 @@ class WDS_Active_Plugin_Data {
 			foreach( $this->get_available_plugins() as $plugin_file => $plugin_data ) {
 				$text .= $plugin_data['Name'] . ' ';
 				/* translators: [A] is meant to describe "Active" */
-				$text .= ( is_plugin_active( $plugin_file ) ) ? __( '[A]', 'wds-apd' ) : '';
+				$text .= ( $this->is_plugin_active_on_any_site( $plugin_file ) ) ? __( '[A]', 'wds-apd' ) : '';
 				/* translators: [NA] is meant to describe "Network Active" */
 				$text .= ( is_plugin_active_for_network( $plugin_file ) ) ? __( '[NA]', 'wds-apd' ) : '';
 				$text .= "\n";
@@ -193,7 +193,7 @@ class WDS_Active_Plugin_Data {
 					foreach( $this->get_available_plugins() as $plugin_file => $plugin_data ) { ?>
 						<tr>
 							<td><?php echo $plugin_data['Name']; ?></td>
-							<td><?php ( is_plugin_active( $plugin_file ) ) ? printf( '<span style="color:green;">%s</span>', __( 'true', 'wds-apd' ) ) : printf( '<span style="color:red;">%s</span>', __( 'false', 'wds-apd' ) ); ?></td>
+							<td><?php ( $this->is_plugin_active_on_any_site( $plugin_file ) ) ? printf( '<span style="color:green;">%s</span>', __( 'true', 'wds-apd' ) ) : printf( '<span style="color:red;">%s</span>', __( 'false', 'wds-apd' ) ); ?></td>
 							<td><?php ( is_plugin_active_for_network( $plugin_file ) ) ? printf( '<span style="color:green;">%s</span>', __( 'true', 'wds-apd' ) ) : printf( '<span style="color:red;">%s</span>', __( 'false', 'wds-apd' ) ); ?></td>
 						</tr>
 					<?php
@@ -202,6 +202,29 @@ class WDS_Active_Plugin_Data {
 			</table>
 		</div>
 	<?php
+	}
+
+	/**
+	 * Determines if a plugin is active on any site in the network
+	 *
+	 * @param $plugin_file (string) plugin to check
+	 *
+	 * @return bool
+	 */
+	public function is_plugin_active_on_any_site( $plugin_file ) {
+
+		$active = false;
+
+		foreach( $this->get_all_sites_active_plugins() as $plugins ) {
+
+			if ( in_array( $plugin_file, $plugins ) ) {
+
+				$active = true;
+			}
+		}
+
+		return $active;
+
 	}
 
 	/**
