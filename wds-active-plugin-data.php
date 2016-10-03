@@ -264,13 +264,13 @@ class WDS_Active_Plugin_Data {
 
 					foreach ( $this->get_all_sites_active_plugins() as $site => $plugins ) {
 
-						if ( is_plugin_active_for_network( $plugin_file ) ) {
-
-							$span = '<span class="dashicons dashicons-yes wds-lt-green"></span>';
-
-						} elseif ( in_array( $plugin_file, (array) $plugins ) ) {
+						if ( in_array( $plugin_file, (array) $plugins ) ) {
 
 							$span = '<span class="dashicons dashicons-yes wds-green"></span>';
+
+						} elseif ( is_plugin_active_for_network( $plugin_file ) ) {
+
+							$span = '<span class="dashicons dashicons-yes wds-lt-green"></span>';
 
 						} else {
 
