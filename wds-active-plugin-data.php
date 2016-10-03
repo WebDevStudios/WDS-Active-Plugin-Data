@@ -237,7 +237,7 @@ class WDS_Active_Plugin_Data {
 		?>
 		<div id="wds-sites-list" class="wds-display-none">
 		<h2><?php _e( 'Sites List', 'wds-apd' ); ?></h2>
-		<table>
+		<table class="wp-list-table striped">
 			<tr>
 				<td><strong><?php _e( 'Plugin Name / Site ID', 'wds-apd' ); ?></strong></td>
 				<?php
@@ -253,10 +253,25 @@ class WDS_Active_Plugin_Data {
 					echo '<tr><td>' . $plugin_data['Name'] . '</td>';
 
 					$index = 0;
+
 					foreach ( $this->get_all_sites_active_plugins() as $site => $plugins ) {
 
+						if ( is_plugin_active_for_network( $plugin_file ) ) {
+
+							$span = '<span class="dashicons dashicons-yes wds-lt-green"></span>';
+
+						} elseif ( in_array( $plugin_file, (array) $plugins ) ) {
+
+							$span = '<span class="dashicons dashicons-yes wds-green"></span>';
+
+						} else {
+
+							$span = '<span class="dashicons dashicons-no-alt wds-red"></span>';
+
+						}
+
 						echo '<td title="' . esc_attr( $sites[ $index ]->domain ) . '">';
-						echo in_array( $plugin_file, (array) $plugins ) ? '<span class="dashicons dashicons-yes wds-green"></span>' : '<span class="dashicons dashicons-no-alt wds-red"></span>';
+						echo $span;
 						echo '</td>';
 
 						$index++;
@@ -316,12 +331,11 @@ class WDS_Active_Plugin_Data {
 	public function styles() { ?>
 		<style>
 		.wds-display-none { display: none; }
-		.wds-form-table { width: 100%; }
-		.wds-form-table th { text-align: left; }
-		.wds-form-table td { width: 33%; }
 		#wds-simple textarea { width: 500px; height: 500px; }
 		.wds-green { background-color: #008000; color: #fff; }
 		.wds-red { background-color: red; color: #fff; }
+		.wds-lt-green { background-color: rgba( 0,128,0,.25); color: #fff; }
+		#wds-sites-list tr td { padding: 5px; }
 		</style>
 	<?php
 	}
