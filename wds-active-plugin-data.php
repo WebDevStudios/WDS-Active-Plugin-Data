@@ -250,7 +250,7 @@ class WDS_Active_Plugin_Data {
 				<td><strong><?php _e( 'Plugin Name / Site ID', 'wds-apd' ); ?></strong></td>
 				<?php
 					foreach( $sites as $site ) {
-						echo '<td title="' . esc_attr( $site->domain ) . '">' . $site->blog_id . '</td>';
+						echo '<td title="' . esc_attr( $site->domain ) . '"><a href="'.get_admin_url( $site->blog_id ).'plugins.php">' . $site->blog_id . '</a></td>';
 					}
 				?>
 			</tr>
