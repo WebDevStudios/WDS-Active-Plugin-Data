@@ -158,6 +158,8 @@ class WDS_Active_Plugin_Data {
 		<div id="wds-simple">
 			<h2><?php _e( 'Simple', 'wds-apd' ); ?></h2>
 			<?php
+			$this->get_clear_transients_link();
+
 			$text = '';
 			foreach( $this->get_available_plugins() as $plugin_file => $plugin_data ) {
 				$text .= $plugin_data['Name'] . ' ';
@@ -183,6 +185,9 @@ class WDS_Active_Plugin_Data {
 	public function get_advanced_list() { ?>
 		<div id="wds-advanced" class="wds-display-none">
 			<h2><?php _e( 'Advanced', 'wds-apd' ); ?></h2>
+
+			<?php 		$this->get_clear_transients_link(); ?>
+
 			<table class="wp-list-table widefat plugins striped">
 				<tr>
 					<th><?php _e( 'Plugin Name', 'wds-apd' ); ?></th>
@@ -238,6 +243,9 @@ class WDS_Active_Plugin_Data {
 		<div id="wds-sites-list" class="wds-display-none">
 		<h2><?php _e( 'Sites List', 'wds-apd' ); ?></h2>
 		<table class="wp-list-table striped">
+
+			<?php 		$this->get_clear_transients_link(); ?>
+
 			<tr>
 				<td><strong><?php _e( 'Plugin Name / Site ID', 'wds-apd' ); ?></strong></td>
 				<?php
@@ -293,6 +301,12 @@ class WDS_Active_Plugin_Data {
 		<p><a class="wds-simple" href="#"><?php _e( 'Toggle Simple', 'wds-apd' ); ?></a> | <a class="wds-advanced" href="#"><?php _e( 'Toggle Advanced', 'wds-apd' ); ?></a> | <a class="wds-sites-list" href="#"><?php _e( 'Toggle Sites List', 'wds-apd' ); ?></a></p>
 
 	<?php
+	}
+
+	public function get_clear_transients_link() {
+		?>
+		<p><a href="settings.php?page=wds-apd&delete-trans"><?php _e( 'Clear Transients', 'wds-apd' ); ?></a></p>
+		<?php
 	}
 
 	/**
