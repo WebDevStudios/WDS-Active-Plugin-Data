@@ -67,7 +67,7 @@ class WDS_Active_Plugin_Data {
 	 */
 	public function get_sites() {
 		if ( empty( $this->sites ) ) {
-			$this->sites = wp_get_sites( array( 'deleted' => false ) );
+			$this->sites = get_sites( array( 'deleted' => false ) );
 		}
 
 		return $this->sites;
@@ -98,7 +98,7 @@ class WDS_Active_Plugin_Data {
 		}
 
 		foreach ( $sites as $site ) {
-			$blog_id = absint( $site['blog_id'] );
+			$blog_id = absint( $site->blog_id );
 			$sql = 1 == $blog_id
 				? "SELECT option_value FROM {$wpdb->prefix}options WHERE option_name = 'active_plugins' LIMIT 1"
 				: "SELECT option_value FROM {$wpdb->prefix}{$blog_id}_options WHERE option_name = 'active_plugins' LIMIT 1";
@@ -158,11 +158,13 @@ class WDS_Active_Plugin_Data {
 		<div id="wds-simple">
 			<h2><?php _e( 'Simple', 'wds-apd' ); ?></h2>
 			<?php
+			$this->get_clear_transients_link();
+
 			$text = '';
 			foreach( $this->get_available_plugins() as $plugin_file => $plugin_data ) {
 				$text .= $plugin_data['Name'] . ' ';
 				/* translators: [A] is meant to describe "Active" */
-				$text .= ( is_plugin_active( $plugin_file ) ) ? __( '[A]', 'wds-apd' ) : '';
+				$text .= ( $this->is_plugin_active_on_any_site( $plugin_file ) ) ? __( '[A]', 'wds-apd' ) : '';
 				/* translators: [NA] is meant to describe "Network Active" */
 				$text .= ( is_plugin_active_for_network( $plugin_file ) ) ? __( '[NA]', 'wds-apd' ) : '';
 				$text .= "\n";
@@ -183,6 +185,9 @@ class WDS_Active_Plugin_Data {
 	public function get_advanced_list() { ?>
 		<div id="wds-advanced" class="wds-display-none">
 			<h2><?php _e( 'Advanced', 'wds-apd' ); ?></h2>
+
+			<?php 		$this->get_clear_transients_link(); ?>
+
 			<table class="wp-list-table widefat plugins striped">
 				<tr>
 					<th><?php _e( 'Plugin Name', 'wds-apd' ); ?></th>
@@ -193,7 +198,7 @@ class WDS_Active_Plugin_Data {
 					foreach( $this->get_available_plugins() as $plugin_file => $plugin_data ) { ?>
 						<tr>
 							<td><?php echo $plugin_data['Name']; ?></td>
-							<td><?php ( is_plugin_active( $plugin_file ) ) ? printf( '<span style="color:green;">%s</span>', __( 'true', 'wds-apd' ) ) : printf( '<span style="color:red;">%s</span>', __( 'false', 'wds-apd' ) ); ?></td>
+							<td><?php ( $this->is_plugin_active_on_any_site( $plugin_file ) ) ? printf( '<span style="color:green;">%s</span>', __( 'true', 'wds-apd' ) ) : printf( '<span style="color:red;">%s</span>', __( 'false', 'wds-apd' ) ); ?></td>
 							<td><?php ( is_plugin_active_for_network( $plugin_file ) ) ? printf( '<span style="color:green;">%s</span>', __( 'true', 'wds-apd' ) ) : printf( '<span style="color:red;">%s</span>', __( 'false', 'wds-apd' ) ); ?></td>
 						</tr>
 					<?php
@@ -202,6 +207,29 @@ class WDS_Active_Plugin_Data {
 			</table>
 		</div>
 	<?php
+	}
+
+	/**
+	 * Determines if a plugin is active on any site in the network
+	 *
+	 * @param $plugin_file (string) plugin to check
+	 *
+	 * @return bool
+	 */
+	public function is_plugin_active_on_any_site( $plugin_file ) {
+
+		$active = false;
+
+		foreach( $this->get_all_sites_active_plugins() as $plugins ) {
+
+			if ( in_array( $plugin_file, $plugins ) ) {
+
+				$active = true;
+			}
+		}
+
+		return $active;
+
 	}
 
 	/**
@@ -214,12 +242,15 @@ class WDS_Active_Plugin_Data {
 		?>
 		<div id="wds-sites-list" class="wds-display-none">
 		<h2><?php _e( 'Sites List', 'wds-apd' ); ?></h2>
-		<table>
+		<table class="wp-list-table striped">
+
+			<?php 		$this->get_clear_transients_link(); ?>
+
 			<tr>
 				<td><strong><?php _e( 'Plugin Name / Site ID', 'wds-apd' ); ?></strong></td>
 				<?php
 					foreach( $sites as $site ) {
-						echo '<td title="' . esc_attr( $site['domain'] ) . '">' . $site['blog_id'] . '</td>';
+						echo '<td title="' . esc_attr( $site->domain ) . '"><a href="'.get_admin_url( $site->blog_id ).'plugins.php">' . $site->blog_id . '</a></td>';
 					}
 				?>
 			</tr>
@@ -230,10 +261,25 @@ class WDS_Active_Plugin_Data {
 					echo '<tr><td>' . $plugin_data['Name'] . '</td>';
 
 					$index = 0;
+
 					foreach ( $this->get_all_sites_active_plugins() as $site => $plugins ) {
 
-						echo '<td title="' . esc_attr( $sites[ $index ]['domain'] ) . '">';
-						echo in_array( $plugin_file, (array) $plugins ) ? '<span class="dashicons dashicons-yes wds-green"></span>' : '<span class="dashicons dashicons-no-alt wds-red"></span>';
+						if ( in_array( $plugin_file, (array) $plugins ) ) {
+
+							$span = '<span class="dashicons dashicons-yes wds-green"></span>';
+
+						} elseif ( is_plugin_active_for_network( $plugin_file ) ) {
+
+							$span = '<span class="dashicons dashicons-yes wds-lt-green"></span>';
+
+						} else {
+
+							$span = '<span class="dashicons dashicons-no-alt wds-red"></span>';
+
+						}
+
+						echo '<td title="' . esc_attr( $sites[ $index ]->domain ) . '">';
+						echo $span;
 						echo '</td>';
 
 						$index++;
@@ -255,6 +301,12 @@ class WDS_Active_Plugin_Data {
 		<p><a class="wds-simple" href="#"><?php _e( 'Toggle Simple', 'wds-apd' ); ?></a> | <a class="wds-advanced" href="#"><?php _e( 'Toggle Advanced', 'wds-apd' ); ?></a> | <a class="wds-sites-list" href="#"><?php _e( 'Toggle Sites List', 'wds-apd' ); ?></a></p>
 
 	<?php
+	}
+
+	public function get_clear_transients_link() {
+		?>
+		<p><a href="settings.php?page=wds-apd&delete-trans"><?php _e( 'Clear Transients', 'wds-apd' ); ?></a></p>
+		<?php
 	}
 
 	/**
@@ -293,12 +345,11 @@ class WDS_Active_Plugin_Data {
 	public function styles() { ?>
 		<style>
 		.wds-display-none { display: none; }
-		.wds-form-table { width: 100%; }
-		.wds-form-table th { text-align: left; }
-		.wds-form-table td { width: 33%; }
 		#wds-simple textarea { width: 500px; height: 500px; }
 		.wds-green { background-color: #008000; color: #fff; }
 		.wds-red { background-color: red; color: #fff; }
+		.wds-lt-green { background-color: rgba( 0,128,0,.25); color: #fff; }
+		#wds-sites-list tr td { padding: 5px; }
 		</style>
 	<?php
 	}
