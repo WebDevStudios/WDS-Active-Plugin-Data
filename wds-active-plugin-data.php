@@ -22,21 +22,21 @@ class WDS_Active_Plugin_Data {
 	 *
 	 * @since 1.0.0
 	 */
-	public $available_plugins = array();
+	public array $available_plugins = [];
 
 	/**
 	 * @var array Active plugins list for every site
 	 *
 	 * @since 1.0.1
 	 */
-	public $all_sites_active_plugins = array();
+	public array $all_sites_active_plugins = [];
 
 	/**
 	 * @var array List of sites
 	 *
 	 * @since 1.0.1
 	 */
-	public $sites = array();
+	public array $sites = [];
 
 	/**
 	 * Load our textdomain.
@@ -52,7 +52,7 @@ class WDS_Active_Plugin_Data {
 	 *
 	 * @since 1.0.0
 	 */
-	public function get_available_plugins() {
+	public function get_available_plugins() : array {
 		if ( empty( $this->available_plugins ) ) {
 			$this->available_plugins = get_plugins();
 		}
@@ -67,7 +67,7 @@ class WDS_Active_Plugin_Data {
 	 */
 	public function get_sites() {
 		if ( empty( $this->sites ) ) {
-			$this->sites = get_sites( array( 'deleted' => false ) );
+			$this->sites = get_sites( [ 'deleted' => false ] );
 		}
 
 		return $this->sites;
@@ -87,7 +87,7 @@ class WDS_Active_Plugin_Data {
 
 		$exists = get_transient( 'all_sites_active_plugins' );
 		if ( $exists && ! isset( $_GET['delete-trans'] ) ) {
-			$this->all_sites_active_plugins = $exists;;
+			$this->all_sites_active_plugins = $exists;
 			return $this->all_sites_active_plugins;
 		}
 
@@ -99,12 +99,12 @@ class WDS_Active_Plugin_Data {
 
 		foreach ( $sites as $site ) {
 			$blog_id = absint( $site->blog_id );
-			$sql = 1 == $blog_id
+			$sql = 1 === $blog_id
 				? "SELECT option_value FROM {$wpdb->prefix}options WHERE option_name = 'active_plugins' LIMIT 1"
 				: "SELECT option_value FROM {$wpdb->prefix}{$blog_id}_options WHERE option_name = 'active_plugins' LIMIT 1";
 			$row = $wpdb->get_row( $sql );
 
-			$this->all_sites_active_plugins[ $blog_id ] = array();
+			$this->all_sites_active_plugins[ $blog_id ] = [];
 			if ( isset( $row->option_value ) ) {
 				$this->all_sites_active_plugins[ $blog_id ] = maybe_unserialize( $row->option_value );
 			}
@@ -121,9 +121,9 @@ class WDS_Active_Plugin_Data {
 	 * @since 1.0.0
 	 */
 	function network_menu() {
-		$hook = add_submenu_page( 'settings.php', __( 'WDS Active Plugins Data', 'wds-apd' ), __( 'WDS Active Plugins Data', 'wds-apd' ), 'manage_options', 'wds-apd', array( $this, 'display_plugin_data' ) );
-		add_action( "admin_footer-$hook", array( $this, 'scripts' ) );
-		add_action( "admin_head-$hook", array( $this, 'styles' ) );
+		$hook = add_submenu_page( 'settings.php', __( 'WDS Active Plugins Data', 'wds-apd' ), __( 'WDS Active Plugins Data', 'wds-apd' ), 'manage_options', 'wds-apd', [ $this, 'display_plugin_data' ] );
+		add_action( "admin_footer-$hook", [ $this, 'scripts' ] );
+		add_action( "admin_head-$hook", [ $this, 'styles' ] );
 	}
 
 	/**
@@ -169,7 +169,6 @@ class WDS_Active_Plugin_Data {
 				$text .= ( is_plugin_active_for_network( $plugin_file ) ) ? __( '[NA]', 'wds-apd' ) : '';
 				$text .= "\n";
 			}
-			// wp_die( '<xmp>$plugin_data: '. print_r( $text, true ) .'</xmp>' );
 			?>
 			<textarea onclick="this.focus();this.select()" readonly="readonly"><?php echo trim( $text ); ?></textarea>
 		</div>
@@ -186,7 +185,7 @@ class WDS_Active_Plugin_Data {
 		<div id="wds-advanced" class="wds-display-none">
 			<h2><?php _e( 'Advanced', 'wds-apd' ); ?></h2>
 
-			<?php 		$this->get_clear_transients_link(); ?>
+			<?php $this->get_clear_transients_link(); ?>
 
 			<table class="wp-list-table widefat plugins striped">
 				<tr>
@@ -216,7 +215,7 @@ class WDS_Active_Plugin_Data {
 	 *
 	 * @return bool
 	 */
-	public function is_plugin_active_on_any_site( $plugin_file ) {
+	public function is_plugin_active_on_any_site( string $plugin_file ) : bool {
 
 		$active = false;
 
@@ -244,7 +243,7 @@ class WDS_Active_Plugin_Data {
 		<h2><?php _e( 'Sites List', 'wds-apd' ); ?></h2>
 		<table class="wp-list-table striped">
 
-			<?php 		$this->get_clear_transients_link(); ?>
+			<?php $this->get_clear_transients_link(); ?>
 
 			<tr>
 				<td><strong><?php _e( 'Plugin Name / Site ID', 'wds-apd' ); ?></strong></td>
@@ -256,7 +255,6 @@ class WDS_Active_Plugin_Data {
 			</tr>
 
 			<?php
-				$index = 0;
 				foreach( $this->get_available_plugins() as $plugin_file => $plugin_data ) {
 					echo '<tr><td>' . $plugin_data['Name'] . '</td>';
 
@@ -356,7 +354,7 @@ class WDS_Active_Plugin_Data {
 
 } // end class
 
-function wds_active_plugin_data() {
+function wds_active_plugin_data() : WDS_Active_Plugin_Data {
 	static $object = null;
 	if ( is_null( $object ) ) {
 		$object = new WDS_Active_Plugin_Data();
@@ -365,5 +363,5 @@ function wds_active_plugin_data() {
 	return $object;
 }
 
-add_action( 'plugins_loaded', array( wds_active_plugin_data(), 'languages' ) );
-add_action( 'network_admin_menu', array( wds_active_plugin_data(), 'network_menu') );
+add_action( 'plugins_loaded', [ wds_active_plugin_data(), 'languages' ] );
+add_action( 'network_admin_menu', [ wds_active_plugin_data(), 'network_menu' ] );
