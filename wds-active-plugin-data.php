@@ -309,29 +309,44 @@ class WDS_Active_Plugin_Data {
 	}
 
 	/**
-	 * Output some jQuery goodness
+	 * Output some Javascript goodness
 	 *
 	 * @since 1.0.0.
 	 */
 	public function scripts() {
 		?>
 		<script>
-			(function($) {
-				$('.wds-advanced,.wds-simple,.wds-sites-list').on( 'click', function(e){
-					e.preventDefault();
-					var links = ['wds-advanced','wds-simple','wds-sites-list'];
-					var $show = $(this).attr('class');
-					var $display = $('#'+$show);
+			window.addEventListener('load', function () {
+				let links = document.querySelectorAll('.wds-advanced,.wds-simple,.wds-sites-list');
+				let selectors = ['wds-advanced', 'wds-simple', 'wds-sites-list'];
 
-					$(links).each(function(i,att){
-						if ( att == $show && $display.hasClass('wds-display-none') ) {
-							$display.removeClass('wds-display-none');
-						} else {
-							$('#'+att).addClass('wds-display-none');
-						}
+				if (links) {
+					Array.from(links).forEach((link) => {
+						link.addEventListener('click', (e) => {
+							e.preventDefault();
+							let current = e.currentTarget.classList[0];
+							let toShow = document.querySelector('#' + current);
+
+							selectors.forEach((selector, i) => {
+								if (
+									current === selector &&
+									toShow.classList.contains('wds-display-none')
+								) {
+									toShow.classList.remove('wds-display-none');
+								} else {
+									// Prevents hiding of current on subsequent clicks.
+									if ( current === selector ) {
+										return;
+									}
+									let toHide = document.querySelector('#'+selector);
+									toHide.classList.add('wds-display-none');
+								}
+
+							})
+						});
 					});
-				});
-			})(jQuery);
+				}
+			});
 		</script>
 	<?php
 	}
