@@ -67,7 +67,11 @@ class WDS_Active_Plugin_Data {
 	 */
 	public function get_sites() {
 		if ( empty( $this->sites ) ) {
-			$this->sites = get_sites( [ 'deleted' => false ] );
+			$args = [
+				'deleted' => false,
+				'number'  => apply_filters( 'wds_active_plugin_data', 100 ),
+			];
+			$this->sites = get_sites( $args );
 		}
 
 		return $this->sites;
