@@ -254,7 +254,7 @@ class WDS_Active_Plugin_Data {
 				<td><strong><?php _e( 'Plugin Name / Site ID', 'wds-apd' ); ?></strong></td>
 				<?php
 					foreach( $sites as $site ) {
-						echo '<td title="' . esc_attr( $site->domain ) . '"><a href="'.get_admin_url( $site->blog_id ).'plugins.php">' . $site->blog_id . '</a></td>';
+						echo '<td title="' . esc_attr( trailingslashit( $site->siteurl ) ) . '"><a href="'.get_admin_url( $site->blog_id ).'plugins.php">' . $site->blog_id . '</a></td>';
 					}
 				?>
 			</tr>
@@ -281,7 +281,7 @@ class WDS_Active_Plugin_Data {
 
 						}
 
-						echo '<td title="' . esc_attr( $sites[ $index ]->domain ) . '">';
+						echo '<td title="' . esc_attr( trailingslashit( $sites[ $index ]->siteurl ) ) . '">';
 						echo $span;
 						echo '</td>';
 
