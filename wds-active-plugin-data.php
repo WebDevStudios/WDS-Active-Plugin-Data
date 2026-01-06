@@ -3,7 +3,7 @@
 Plugin Name: WDS Active Plugin Data
 Plugin URI: http://www.webdevstudios.com
 Description: Get active status of available plugins in WordPress Multisite
-Version: 1.0.1
+Version: 1.1.0
 Author: WebDevStudios
 Author URI: http://www.webdevstudios.com
 License: GPLv2
