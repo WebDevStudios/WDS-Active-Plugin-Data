@@ -156,7 +156,8 @@ class WDS_Active_Plugin_Data {
 	 */
 	public function get_simple_list() { ?>
 		<div id="wds-simple">
-			<h2><?php _e( 'Simple', 'wds-apd' ); ?></h2>
+			<h2><?php esc_html_e( 'Simple', 'wds-apd' ); ?></h2>
+			<p><?php esc_html_e( '[A] means active in at least one site, [NA] means network active', 'wds-apd' ) ?></p>
 			<?php
 			$this->get_clear_transients_link();
 
