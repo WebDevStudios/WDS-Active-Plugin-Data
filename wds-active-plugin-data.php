@@ -304,7 +304,7 @@ class WDS_Active_Plugin_Data {
 
 	public function get_clear_transients_link() {
 		?>
-		<p><a href="settings.php?page=wds-apd&delete-trans"><?php _e( 'Clear Transients', 'wds-apd' ); ?></a></p>
+		<p><a href="<?php echo esc_url( network_admin_url( 'settings.php?page=wds-apd&delete-trans' ) ); ?>"><?php esc_html_e( 'Clear Transients', 'wds-apd' ); ?></a></p>
 		<?php
 	}
 
