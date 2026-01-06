@@ -352,7 +352,7 @@ class WDS_Active_Plugin_Data {
 	}
 
 	/**
-	 * Make it pretty-er
+	 * Make it prettier
 	 *
 	 * @since 1.0.0
 	 */
