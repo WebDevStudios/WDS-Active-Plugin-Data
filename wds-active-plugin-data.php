@@ -171,7 +171,7 @@ class WDS_Active_Plugin_Data {
 				$text .= "\n";
 			}
 			?>
-			<textarea onclick="this.focus();this.select()" readonly="readonly"><?php echo trim( $text ); ?></textarea>
+			<label><textarea onclick="this.focus();this.select()" readonly="readonly"><?php echo trim( esc_html( $text ) ); ?></textarea></label>
 		</div>
 
 		<?php
